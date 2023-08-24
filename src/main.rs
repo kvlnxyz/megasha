@@ -48,6 +48,32 @@ fn parse_message(input: String) -> Vec<String> {
     word_blocks
 }
 
+fn rotate(binary: &str, amount: usize) -> String {
+    let mut start = String::new();
+    let mut end = String::new();
+
+    let binary_len = binary.len();
+
+    if binary_len >= amount {
+        start = binary[binary_len - amount..].to_string();
+        end = binary[..binary_len - amount].to_string();
+    }
+
+    return format!("{}{}", start, end);
+}
+
+fn shift(binary: &str, amount: usize) -> String {
+    let start = "0".repeat(amount);
+    let end = if binary.len() >= amount {
+        binary[..binary.len() - amount].to_string()
+    } else {
+        String::from(binary)
+    };
+
+    return format!("{}{}", start, end);
+}
+
+
 fn main() {
     let message: &str = "Testing function";
     let message_binary: String = string_to_binary(message);
