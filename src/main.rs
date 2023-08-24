@@ -5,22 +5,41 @@ fn string_to_binary(input: &str) -> String {
     for c in input.chars() {
         let binary_repr = format!("{:08b}", c as u8);
         binary_string.push_str(&binary_repr);
-        binary_string.push(' ');
     }
 
     binary_string.trim().to_string()
 
 }
 
-fn return_number() -> i32 {
-    let number = 42;  // Replace with the desired number
-    number
+fn pad_message(input: String) -> String {
+    let mut padded_message: String = String::new();
+
+    padded_message += &input;
+
+    padded_message += "1";
+
+    let zero_count: usize = 448 - padded_message.len();
+    let zeros: String = "0".repeat(zero_count);
+
+    padded_message += &zeros;
+
+    let binary_string = format!("{:b}", input.len());
+    let more_zeros: String = "0".repeat(64 - binary_string.len());
+
+    let l_add = more_zeros + &binary_string;
+
+    padded_message += &l_add;
+
+    padded_message
+
 }
+
 fn main() {
     let message: &str = "RedBlockBlue";
-    let number = return_number();
-    println!("Value in binary {}", string_to_binary(message));
+    let message_binary: String = string_to_binary(message);
+    let padded_message = pad_message(message_binary);
+    println!("{}", padded_message);
 
-    println!("Message is: {}, nubmer is {}", message, number);
+    // println!("Message is {}", message);
 }
 
