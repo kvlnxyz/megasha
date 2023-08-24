@@ -1,3 +1,28 @@
+fn add_binary(one: &str, two: &str, three: &str, four: &str) -> String {
+    let mut value_int = 0;
+
+    for x in 0..32 {
+        let two: usize = 2;
+        value_int += one.chars().nth(31-x) * two.pow(x);
+    }
+
+    // for x in 0..32 {
+    //     value_int += two.chars().nth(31 - x).unwrap().to_digit(2).unwrap() * 2u32.pow(x as u128);
+    // }
+
+    // for x in 0..32 {
+    //     value_int += three.chars().nth(31 - x).unwrap().to_digit(2).unwrap() * 2u32.pow(x as u128);
+    // }
+
+    // for x in 0..32 {
+    //     value_int += four.chars().nth(31 - x).unwrap().to_digit(2).unwrap() * 2u32.pow(x as u128);
+    // }
+
+    value_int %= 2u32.pow(32);
+    let value_binary = format!("{:032b}", value_int);
+
+    value_binary
+}
 
 fn string_to_binary(input: &str) -> String {
 
@@ -73,12 +98,55 @@ fn shift(binary: &str, amount: usize) -> String {
     return format!("{}{}", start, end);
 }
 
+fn sigma_zero(input: &str) -> String {
+    let one = rotate(input, 7);
+    let two = rotate(input, 18);
+    let three = shift(input, 3);
+    let mut output = String::new();
+    for x in 0..32 {
+        let addition = one.chars().nth(x).unwrap().to_digit(10).unwrap() +
+                       two.chars().nth(x).unwrap().to_digit(10).unwrap() +
+                       three.chars().nth(x).unwrap().to_digit(10).unwrap();
+        output.push_str(&(addition % 2).to_string());
+    }
+    output
+}
+
+fn sigma_one(input: &str) -> String {
+    let one = rotate(input, 17);
+    let two = rotate(input, 19);
+    let three = shift(input, 10);
+    let mut output = String::new();
+    for x in 0..32 {
+        let addition = one.chars().nth(x).unwrap().to_digit(10).unwrap() +
+                       two.chars().nth(x).unwrap().to_digit(10).unwrap() +
+                       three.chars().nth(x).unwrap().to_digit(10).unwrap();
+        output.push_str(&(addition % 2).to_string());
+    }
+    output
+}
+
+fn computation(input: Vec<String>) -> Vec<String> {
+    let mut w: Vec<String> = input.clone();
+    for x in 0..48 {
+        let index: usize = x + 16;
+        let one = sigma_one(&w[index - 2]);
+        let two = &w[index - 7];
+        let three = sigma_zero(&w[index - 15]);
+        let four = &w[index - 16];
+        let new_val = add_binary(&one, &two, &three, &four);
+        w.push(new_val);
+    }
+    w
+}
+
+
 
 fn main() {
     let message: &str = "Testing function";
     let message_binary: String = string_to_binary(message);
     let padded_message: String = pad_message(message_binary);
     let padded_vec: Vec<String> = parse_message(padded_message);
-
+    computation(padded_vec);
 }
 
